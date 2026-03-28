@@ -6,7 +6,7 @@
 #include <cstring>
 
 // ============================================================
-// main.cpp — Драйвер nnc-codegen
+// main.cpp - Драйвер nnc-codegen
 //
 // Использование:
 //   nnc-codegen [опции] <input.mlir>
@@ -82,7 +82,6 @@ static nnc::TargetArch parseArch(const std::string& s) {
 }
 
 // ---- Синтетический демо-граф для тестирования без ONNX ----
-// Граф: input → Add(input, input) → Relu → MatMul(relu, weight) → output
 static nnc::Graph makeDemoGraph() {
     nnc::Graph g;
     g.name = "demo_graph";

@@ -4,18 +4,6 @@
 #include <string>
 #include <filesystem>
 
-// ============================================================
-// ../include/../include/codegen.h — Высокоуровневый фасад пайплайна компиляции
-//
-// Шаги пайплайна:
-//   1. Graph  →  MLIR  (.mlir)     [MLIREmitter]
-//   2. MLIR   →  LLVM IR (.ll)     [mlir-opt + mlir-translate]
-//   3. LLVM IR → Assembly (.s)     [llc]
-//
-// Каждый внешний инструмент запускается через std::system().
-// Пути к инструментам и целевая архитектура настраиваются
-// через CodegenOptions (или аргументы командной строки).
-// ============================================================
 
 namespace nnc {
 
@@ -40,7 +28,7 @@ struct CodegenOptions {
     // Целевая архитектура для ассемблера
     TargetArch targetArch = TargetArch::Native;
 
-    // Уровень оптимизации LLVM (0–3)
+    // Уровень оптимизации LLVM (0-3)
     int optLevel = 2;
 
     // Рабочая директория (куда сохраняются промежуточные файлы)
@@ -88,13 +76,13 @@ class Codegen {
 public:
     explicit Codegen(CodegenOptions opts = {});
 
-    // Запустить полный пайплайн: Graph → MLIR → LLVM IR → .s
+    // Запустить полный пайплайн: Graph -> MLIR -> LLVM IR -> .s
     CodegenResult run(const Graph& graph);
 
-    // Запустить только шаг Graph → MLIR (удобно для отладки)
+    // Запустить только шаг Graph -> MLIR (удобно для отладки)
     StepResult    emitMLIR(const Graph& graph);
 
-    // Запустить шаги MLIR → LLVM IR → .s на существующем .mlir-файле
+    // Запустить шаги MLIR -> LLVM IR -> .s на существующем .mlir-файле
     CodegenResult compileFromMLIR(const std::filesystem::path& mlirFile);
 
     const CodegenOptions& options() const { return opts_; }
@@ -102,11 +90,11 @@ public:
 private:
     CodegenOptions opts_;
 
-    // Шаг 2: mlir-opt + mlir-translate → .ll
+    // Шаг 2: mlir-opt + mlir-translate -> .ll
     StepResult runMLIRToLLVM(const std::filesystem::path& mlirFile,
                               const std::filesystem::path& llFile);
 
-    // Шаг 3: llc → .s
+    // Шаг 3: llc -> .s
     StepResult runLLCToAsm  (const std::filesystem::path& llFile,
                               const std::filesystem::path& asmFile);
 
@@ -117,4 +105,4 @@ private:
     std::string mlirOptPasses() const;
 };
 
-} // namespace nnc
+}

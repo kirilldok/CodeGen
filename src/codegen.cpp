@@ -33,7 +33,7 @@ int Codegen::runCommand(const std::string& cmd) const {
     return std::system(cmd.c_str());
 }
 
-// ---- Шаг 1: Graph → .mlir ----
+// ---- Шаг 1: Graph -> .mlir ----
 StepResult Codegen::emitMLIR(const Graph& graph) {
     StepResult res;
     auto mlirFile = opts_.workDir / (opts_.outputBaseName + ".mlir");
@@ -72,21 +72,19 @@ StepResult Codegen::emitMLIR(const Graph& graph) {
 std::string Codegen::mlirOptPasses() const {
     if (!opts_.applyMlirPasses) return "";
 
-    // Стандартный путь lowering: linalg → loops → SCF → CF → LLVM
-    // Каждый проход снижает уровень абстракции на один шаг
     return
-        " --linalg-bufferize"                  // тензоры → буферы
-        " --convert-linalg-to-loops"           // linalg → SCF
-        " --convert-scf-to-cf"                 // SCF → CF (Control Flow)
-        " --convert-cf-to-llvm"                // CF → LLVM диалект
-        " --convert-arith-to-llvm"             // arith → LLVM
-        " --convert-func-to-llvm"              // func → llvm.func
+        " --linalg-bufferize"                  // тензоры -> буферы
+        " --convert-linalg-to-loops"           // linalg -> SCF
+        " --convert-scf-to-cf"                 // SCF -> CF (Control Flow)
+        " --convert-cf-to-llvm"                // CF-> LLVM диалект
+        " --convert-arith-to-llvm"             // arith -> LLVM
+        " --convert-func-to-llvm"              // func -> llvm.func
         " --reconcile-unrealized-casts"        // удаляем лишние касты
         " --canonicalize"                      // упрощение (CSE, DCE, …)
         ;
 }
 
-// ---- Шаг 2: .mlir → .ll ----
+// ---- Шаг 2: .mlir -> .ll ----
 StepResult Codegen::runMLIRToLLVM(const std::filesystem::path& mlirFile,
                                    const std::filesystem::path& llFile) {
     StepResult res;
@@ -108,7 +106,7 @@ StepResult Codegen::runMLIRToLLVM(const std::filesystem::path& mlirFile,
         return res;
     }
 
-    // mlir-translate конвертирует опущенный MLIR → LLVM IR
+    // mlir-translate конвертирует опущенный MLIR -> LLVM IR
     std::string transCmd = opts_.mlirTranslatePath
                          + " --mlir-to-llvmir"
                          + " " + optedMlir.string()
@@ -132,7 +130,7 @@ StepResult Codegen::runMLIRToLLVM(const std::filesystem::path& mlirFile,
     return res;
 }
 
-// ---- Шаг 3: .ll → .s ----
+// ---- Шаг 3: .ll -> .s ----
 StepResult Codegen::runLLCToAsm(const std::filesystem::path& llFile,
                                   const std::filesystem::path& asmFile) {
     StepResult res;
@@ -143,7 +141,7 @@ StepResult Codegen::runLLCToAsm(const std::filesystem::path& llFile,
         marchFlag = " --march=" + arch;
 
     // llc: генерация ассемблера из LLVM IR
-    // -filetype=asm — текстовый ассемблер (.s)
+    // -filetype=asm - текстовый ассемблер (.s)
     std::string cmd = opts_.llcPath
                     + marchFlag
                     + " -O" + std::to_string(opts_.optLevel)
@@ -169,11 +167,9 @@ StepResult Codegen::runLLCToAsm(const std::filesystem::path& llFile,
 CodegenResult Codegen::run(const Graph& graph) {
     CodegenResult result;
 
-    // Шаг 1
     result.mlirStep = emitMLIR(graph);
     if (!result.mlirStep.ok) return result;
 
-    // Шаги 2 и 3
     return compileFromMLIR(result.mlirStep.outputFile);
 }
 
@@ -185,11 +181,9 @@ CodegenResult Codegen::compileFromMLIR(const std::filesystem::path& mlirFile) {
     auto llFile  = opts_.workDir / (opts_.outputBaseName + ".ll");
     auto asmFile = opts_.workDir / (opts_.outputBaseName + ".s");
 
-    // Шаг 2
     result.llvmIrStep = runMLIRToLLVM(mlirFile, llFile);
     if (!result.llvmIrStep.ok) return result;
 
-    // Шаг 3
     result.asmStep = runLLCToAsm(llFile, asmFile);
 
     if (!opts_.keepIntermediates && result.asmStep.ok)
@@ -198,4 +192,4 @@ CodegenResult Codegen::compileFromMLIR(const std::filesystem::path& mlirFile) {
     return result;
 }
 
-} // namespace nnc
+} 

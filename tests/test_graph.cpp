@@ -2,21 +2,7 @@
 #include "../include/graph.h"
 #include <sstream>
 
-// ============================================================
-// test_graph.cpp — Тесты структуры данных вычислительного графа
-//
-// Покрываем:
-//   • DType → строка и обратно
-//   • TensorShape: rank, scalar, toString, dynamic dims
-//   • TensorInfo: поля, isInitializer
-//   • Graph: addTensor, getTensor, inputs/outputs
-//   • OpType: round-trip строка ↔ enum, Unknown
-//   • Graph::dump (smoke, без краша)
-// ============================================================
-
-// ----------------------------------------------------------------
 // Suite: DType
-// ----------------------------------------------------------------
 
 TEST(DType, ToStringKnownTypes) {
     CHECK_EQ(nnc::dtypeToString(nnc::DType::Float32), std::string("float32"));
@@ -30,9 +16,8 @@ TEST(DType, ToStringUnknown) {
     CHECK_EQ(nnc::dtypeToString(nnc::DType::Unknown), std::string("unknown"));
 }
 
-// ----------------------------------------------------------------
+
 // Suite: TensorShape
-// ----------------------------------------------------------------
 
 TEST(TensorShape, ScalarIsEmpty) {
     nnc::TensorShape s;
@@ -54,7 +39,6 @@ TEST(TensorShape, ToStringStatic) {
 }
 
 TEST(TensorShape, ToStringDynamic) {
-    // Отрицательные размерности → '?'
     nnc::TensorShape s;
     s.dims = {-1, 128};
     CHECK_EQ(s.toString(), std::string("[?, 128]"));
@@ -78,9 +62,8 @@ TEST(TensorShape, AllDynamic) {
     CHECK_EQ(s.toString(), std::string("[?, ?, ?]"));
 }
 
-// ----------------------------------------------------------------
+
 // Suite: TensorInfo
-// ----------------------------------------------------------------
 
 TEST(TensorInfo, DefaultNotInitializer) {
     nnc::TensorInfo t;
@@ -100,9 +83,8 @@ TEST(TensorInfo, InitializerFlag) {
     CHECK_EQ(t.floatData.size(), size_t(3));
 }
 
-// ----------------------------------------------------------------
+
 // Suite: OpType
-// ----------------------------------------------------------------
 
 TEST(OpType, RoundTripAllSupported) {
     using namespace nnc;
@@ -118,7 +100,7 @@ TEST(OpType, UnknownString) {
 }
 
 TEST(OpType, CaseSensitive) {
-    // "add" ≠ "Add" — ONNX имена с заглавной буквы
+    // "add" != "Add" - ONNX имена с заглавной буквы
     CHECK_EQ(nnc::opTypeFromString("add"), nnc::OpType::Unknown);
     CHECK_EQ(nnc::opTypeFromString("ADD"), nnc::OpType::Unknown);
 }
@@ -127,9 +109,8 @@ TEST(OpType, UnknownToString) {
     CHECK_EQ(nnc::opTypeToString(nnc::OpType::Unknown), std::string("Unknown"));
 }
 
-// ----------------------------------------------------------------
+
 // Suite: Graph
-// ----------------------------------------------------------------
 
 TEST(Graph, EmptyGraphHasNoTensors) {
     nnc::Graph g;
@@ -214,9 +195,8 @@ TEST(Graph, DumpDoesNotCrash) {
     CHECK_CONTAINS(buf.str(), "relu_0");
 }
 
-// ----------------------------------------------------------------
+
 // Suite: ConvAttrs
-// ----------------------------------------------------------------
 
 TEST(ConvAttrs, DefaultValues) {
     nnc::ConvAttrs ca;
@@ -228,9 +208,8 @@ TEST(ConvAttrs, DefaultValues) {
     CHECK(ca.kernelShape.empty());
 }
 
-// ----------------------------------------------------------------
+
 // Suite: GemmAttrs
-// ----------------------------------------------------------------
 
 TEST(GemmAttrs, DefaultValues) {
     nnc::GemmAttrs ga;

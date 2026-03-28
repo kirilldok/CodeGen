@@ -247,7 +247,7 @@ static void testModuleWrapper() {
     std::cout << "done\n";
 }
 
-// ---- Тест 9: CodegenOptions — targetArchToString ----
+// ---- Тест 9: CodegenOptions - targetArchToString ----
 static void testTargetArch() {
     std::cout << "Test: targetArchToString ... ";
     CHECK(nnc::targetArchToString(nnc::TargetArch::Native)  == "", "native");
@@ -257,7 +257,7 @@ static void testTargetArch() {
     std::cout << "done\n";
 }
 
-// ============================================================
+
 int main() {
     std::cout << "=== nnc-codegen unit tests ===\n\n";
 

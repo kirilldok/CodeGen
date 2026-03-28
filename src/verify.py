@@ -7,7 +7,7 @@ verify.py — Верификация результатов nnc-codegen чере
     python3 scripts/verify.py
 
 Что делает скрипт:
-  1. Создаёт простую модель (Linear → ReLU → Linear) в PyTorch
+  1. Создаёт простую модель (Linear -> ReLU -> Linear) в PyTorch
   2. Экспортирует её в ONNX
   3. Запускает inference через onnxruntime (эталон)
   4. Генерирует MLIR через nnc-codegen (демо-режим)
@@ -36,7 +36,6 @@ torch = try_import("torch")
 onnx  = try_import("onnx")
 ort   = try_import("onnxruntime")
 
-# ---- 1. Создание модели PyTorch ----
 class SimpleMLP(object):
     """Имитация простого MLP без зависимостей от torch (fallback)."""
     pass

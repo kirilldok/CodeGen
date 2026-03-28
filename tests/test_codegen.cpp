@@ -7,14 +7,14 @@
 #include <sstream>
 
 // ============================================================
-// test_codegen.cpp — Тесты пайплайна компиляции (Codegen)
+// test_codegen.cpp - Тесты пайплайна компиляции (Codegen)
 //
 // Покрываем:
-//   • TargetArch → строка (все значения)
+//   • TargetArch -> строка (все значения)
 //   • CodegenOptions: значения по умолчанию
 //   • emitMLIR: создаёт файл с корректным содержимым
 //   • compileFromMLIR: обработка несуществующего файла
-//   • Шаг млир → ллвм: формирование командной строки
+//   • Шаг млир -> ллвм: формирование командной строки
 //   • Шаг llc: флаги оптимизации, --march
 //   • allOk() при частичных неудачах
 //   • Рабочая директория создаётся автоматически
@@ -43,9 +43,8 @@ static nnc::Graph makeSimpleGraph(const std::string& name = "test_g") {
     return g;
 }
 
-// ----------------------------------------------------------------
+
 // Suite: TargetArch
-// ----------------------------------------------------------------
 
 TEST(TargetArch, NativeIsEmptyString) {
     CHECK_EQ(nnc::targetArchToString(nnc::TargetArch::Native), std::string(""));
@@ -67,9 +66,8 @@ TEST(TargetArch, WASM32) {
     CHECK_EQ(nnc::targetArchToString(nnc::TargetArch::WASM32), std::string("wasm32"));
 }
 
-// ----------------------------------------------------------------
-// Suite: CodegenOptions — значения по умолчанию
-// ----------------------------------------------------------------
+
+// Suite: CodegenOptions - значения по умолчанию
 
 TEST(CodegenOptions, DefaultOptLevel) {
     nnc::CodegenOptions opts;
@@ -108,9 +106,8 @@ TEST(CodegenOptions, DefaultVerboseFalse) {
     CHECK(!opts.verbose);
 }
 
-// ----------------------------------------------------------------
+
 // Suite: StepResult
-// ----------------------------------------------------------------
 
 TEST(StepResult, DefaultNotOk) {
     nnc::StepResult r;
@@ -158,9 +155,8 @@ TEST(CodegenResult, AsmFileReturnsAsmOutput) {
     CHECK_EQ(r.asmFile(), std::string("/tmp/my_model.s"));
 }
 
-// ----------------------------------------------------------------
-// Suite: EmitMLIR — шаг 1 пайплайна
-// ----------------------------------------------------------------
+
+// Suite: EmitMLIR - шаг 1 пайплайна
 
 TEST(EmitMLIR, CreatesOutputFile) {
     fs::path tmpDir = fs::temp_directory_path() / "nnc_test_emit";
@@ -241,7 +237,7 @@ TEST(EmitMLIR, OutputBaseNameApplied) {
 }
 
 TEST(EmitMLIR, WorkDirCreatedAutomatically) {
-    // Директория не существует — Codegen должен её создать
+    // Директория не существует - Codegen должен её создать
     fs::path tmpDir = fs::temp_directory_path() / "nnc_autodir_test" / "sub" / "deep";
     fs::remove_all(tmpDir.parent_path().parent_path());  // убедимся что нет
 
@@ -305,12 +301,11 @@ TEST(EmitMLIR, MultipleCallsOverwrite) {
     fs::remove_all(tmpDir);
 }
 
-// ----------------------------------------------------------------
-// Suite: CompileFromMLIR — поведение при отсутствии LLVM-инструментов
-// ----------------------------------------------------------------
+
+// Suite: CompileFromMLIR - поведение при отсутствии LLVM-инструментов
 
 TEST(CompileFromMLIR, MissingFileFailsGracefully) {
-    // Файл не существует → шаг должен вернуть !ok, а не упасть
+    // Файл не существует -> шаг должен вернуть !ok, а не упасть
     nnc::CodegenOptions opts;
     opts.workDir        = fs::temp_directory_path();
     opts.outputBaseName = "missing_test";
@@ -355,9 +350,8 @@ TEST(CompileFromMLIR, WithBogusTools_LLVMStepFails) {
     fs::remove_all(tmpDir);
 }
 
-// ----------------------------------------------------------------
-// Suite: CodegenOptions — настройки пайплайна
-// ----------------------------------------------------------------
+
+// Suite: CodegenOptions - настройки пайплайна
 
 TEST(CodegenOptionsUsage, VerboseFlagSetCorrectly) {
     nnc::CodegenOptions opts;
@@ -397,9 +391,8 @@ TEST(CodegenOptionsUsage, AllTargetArchsValid) {
     CHECK_NE(nnc::targetArchToString(A::WASM32),  std::string(""));
 }
 
-// ----------------------------------------------------------------
-// Suite: Integration — Graph → MLIR файл содержит все операции
-// ----------------------------------------------------------------
+
+// Suite: Integration - Graph -> MLIR файл содержит все операции
 
 TEST(Integration, FullGraphAllOps) {
     // Граф со всеми поддерживаемыми операциями

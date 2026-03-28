@@ -84,4 +84,4 @@ void Graph::dump(bool verbose) const {
     }
 }
 
-} // namespace nnc
+} 

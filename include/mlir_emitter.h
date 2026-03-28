@@ -4,20 +4,6 @@
 #include <ostream>
 #include <string>
 
-// ============================================================
-// ../include/../include/mlir_emitter.h — Генератор MLIR-представления
-//
-// Преобразует вычислительный граф (nnc::Graph) в текстовый
-// MLIR-код с использованием диалектов:
-//   • func  — функции и вызовы
-//   • arith — арифметические примитивы
-//   • linalg — тензорные операции (conv, matmul, …)
-//   • tensor — абстракция над многомерными массивами
-//
-// Полученный .mlir-файл затем обрабатывается цепочкой:
-//   mlir-opt → mlir-translate → llc
-// ============================================================
-
 namespace nnc {
 
 // Параметры генерации MLIR
@@ -54,7 +40,7 @@ private:
     // Преобразование типа тензора в MLIR-тип (например, "f32")
     static std::string mlirScalarType(DType dt);
     // Преобразование формы тензора в MLIR memref/tensor-тип
-    // Например: [1, 3, 224, 224] × f32 → "tensor<1x3x224x224xf32>"
+    // Например: [1, 3, 224, 224] × f32 -> "tensor<1x3x224x224xf32>"
     static std::string mlirTensorType(const TensorInfo& t);
     // SSA-имя для тензора (добавляем '%' к имени)
     static std::string ssaName(const std::string& name);
@@ -62,4 +48,4 @@ private:
     static std::string ind(int n);
 };
 
-} // namespace nnc
+}

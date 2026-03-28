@@ -7,7 +7,6 @@
 namespace nnc {
 
 // ---- Вспомогательные статические методы ----
-
 std::string MLIREmitter::ind(int n) {
     return std::string(n * 2, ' ');
 }
@@ -33,7 +32,7 @@ std::string MLIREmitter::mlirScalarType(DType dt) {
         case DType::Float64: return "f64";
         case DType::Int32:   return "i32";
         case DType::Int64:   return "i64";
-        default:             return "f32";  // по умолчанию — float
+        default:             return "f32";  // по умолчанию - float
     }
 }
 
@@ -48,12 +47,10 @@ std::string MLIREmitter::mlirTensorType(const TensorInfo& t) {
     return "tensor<" + dims + mlirScalarType(t.dtype) + ">";
 }
 
-// ---- Конструктор ----
-
+// ---- Конструктор ---
 MLIREmitter::MLIREmitter(const MLIREmitOptions& opts) : opts_(opts) {}
 
 // ---- Главный метод ----
-
 std::string MLIREmitter::emitToString(const Graph& graph) const {
     std::ostringstream oss;
     emit(graph, oss);
@@ -69,7 +66,7 @@ void MLIREmitter::emit(const Graph& graph, std::ostream& os) const {
         os << "module {\n\n";
 
     // ---- Сигнатура функции ----
-    // Аргументы — входные тензоры графа (без инициализаторов)
+    // Аргументы - входные тензоры графа (без инициализаторов)
     os << ind(1) << "func.func @" << opts_.funcName << "(";
 
     bool firstArg = true;
@@ -98,7 +95,7 @@ void MLIREmitter::emit(const Graph& graph, std::ostream& os) const {
         if (!t.isInitializer || t.floatData.empty()) continue;
 
         // Пример: объявляем скаляр или 1-d константу
-        // Полная сериализация тензорных констант — за рамками задания,
+        // Полная сериализация тензорных констант - за рамками задания,
         // здесь показываем как встроить dense-атрибут для небольших весов
         os << ind(2) << "// initializer: " << name << "\n";
         os << ind(2) << ssaName(name) << " = arith.constant ";
@@ -152,9 +149,7 @@ void MLIREmitter::emit(const Graph& graph, std::ostream& os) const {
 
 // ---- Генераторы отдельных операций ----
 
-// Add: поэлементное сложение через linalg.map или tensor операции
-// Для простоты используем arith.addf на скалярных значениях
-// (в реальном компиляторе — linalg.generic или tosa.add)
+// Поэлементное сложение через linalg.map или tensor операции
 void MLIREmitter::emitAdd(const Node& node, const Graph& g,
                           std::ostream& os, int indent) const {
     // %out = linalg.add ins(%a, %b) outs(%dst)
@@ -267,8 +262,6 @@ void MLIREmitter::emitMatMul(const Node& node, const Graph& g,
     os << ind(indent) << "  -> " << typeOut << "\n";
 }
 
-// Gemm: α·A·Bᵀ + β·C  →  раскладываем в matmul + scaled-add
-// При transA/transB=0 стандартно: out = A × B + C
 void MLIREmitter::emitGemm(const Node& node, const Graph& g,
                             std::ostream& os, int indent) const {
     const GemmAttrs* ga = std::get_if<GemmAttrs>(&node.attrs);
@@ -312,4 +305,4 @@ void MLIREmitter::emitGemm(const Node& node, const Graph& g,
     }
 }
 
-} // namespace nnc
+}
